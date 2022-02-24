@@ -1,69 +1,69 @@
-import React, {useState} from 'react'
-import { render } from 'react-dom';
-import { View, StyleSheet, Image, FlatList } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import * as React from 'react';
+import { ListItem, Avatar } from 'react-native-elements'
+import {FlatList} from 'react-native'
 
 
 
-const url = 'https://statsapi.web.nhl.com/api/v1/schedule'
-
-const items = [
+const list = [
     {
-        name: 'bryson',
-        test: 'contact'
+      id: 1,
+      name: 'Amy Farha',
+      avatar_url: 'https://randomuser.me/api/portraits/women/57.jpg',
+      subtitle: 'Vice President'
     },
     {
-        name: 'james',
-        test: 'contacts'
-    }
-]
-export default class Scheduler extends React.Component{
+      id: 2,
+      name: 'Chris Jackson',
+      avatar_url: 'https://randomuser.me/api/portraits/women/57.jpg',
+      subtitle: 'Vice Chairman'
+    },
+
+  ]
+
+  const NHL_SCHEDULE = 'https://statsapi.web.nhl.com/api/v1/schedule'
+  export default class Scheduler extends React.Component {
     constructor(props){
-        super(props)
-    this.state ={
-        games: null
+        super(props);
+        this.state = {
+            schedule: {},
+            teams: {},
+        }
     }
 
- this.getNHLSchedule = this.getNHLSchedule.bind(this);
-}
+    componentDidMount(){
+        this.setSchedule();
+    }
+
+    async setSchedule(){
+        let schedule = {};
+        await fetch(NHL_SCHEDULE).then(response => response.json())
+        .then(data => {
+            this.setState({schedule: data});
+        })
+    }
 
 
-
-async getNHLSchedule(url){
-    let games;
-    await fetch(url).then(response => response.json())
-    .then((data) => {
-        games = data.dates[0].games; 
-        console.log(games)   
-    });
-    return games;
-
-}
-
-keyExtractor = (item, index) => index.toString()
-
-renderItem = ({item}) => {
-    <ListItem
-    title={item.name}
-    subtitle={item.test}
-    //leftAvatar={{ source: { uri: item.avatar_url } }}
-    bottomDivider={true}
-  />
-}
-
-
-render(){
-    console.log("test")
-    return(
-       <View>
-        <FlatList
-            keyExtractor={this.keyExtractor}
-            data={items}
-            renderItem={this.renderItem} />
-        </View>
-            
+  keyExtractor = (item) => item.id
   
+  renderItem = ({ item }) => (
+    <ListItem bottomDivider>
+        <Avatar rounded source={{uri: item.avatar_url}} />
+        <ListItem.Title>{item.name}</ListItem.Title>
+        <ListItem.Subtitle>{item.subtitle}</ListItem.Subtitle>
+    </ListItem>
+  )
+  
+  render () {
+      console.log(list)
+    return (
+      <FlatList
+        keyExtractor={this.keyExtractor}
+        data={list}
+        renderItem={this.renderItem}
+      />
     )
-}
+  }
 
-}
+
+  }
+
