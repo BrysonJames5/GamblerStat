@@ -1,25 +1,27 @@
 import * as React from 'react';
 import { ListItem, Avatar } from 'react-native-elements'
-import {FlatList} from 'react-native'
+import {FlatList, StyleSheet} from 'react-native'
 import teams, {getTeamId} from '@nhl-api/teams'
 
 
 
-const list = [
-    {
-      id: 1,
-      name: 'Amy Farha',
-      avatar_url: 'https://randomuser.me/api/portraits/women/57.jpg',
-      subtitle: 'Vice President'
+const styles = StyleSheet.create({
+    container: {
+        paddingTop: 22
     },
-    {
-      id: 2,
-      name: 'Chris Jackson',
-      avatar_url: 'https://randomuser.me/api/portraits/women/57.jpg',
-      subtitle: 'Vice Chairman'
+    item:{
+        //padding:10,
+        fontSize: 19,
+        height: 75
     },
-
-  ]
+    title: {
+        paddingRight: 10,
+        paddingLeft:10
+    }
+    
+    
+    
+})
 
   const NHL_SCHEDULE = 'https://statsapi.web.nhl.com/api/v1/schedule'
   export default class Scheduler extends React.Component {
@@ -48,25 +50,23 @@ const list = [
     createGamesObject = () =>{
         //from state schedule object, create Game
         let games = []
-        console.log(this.state.schedule)
-        console.log(teams);
         let counter = 0;
         const team_names = teams;
         this.state.schedule.dates[0].games.forEach(ev => {
             counter++;
-            let homeName = ev.teams.home.team.name;
-            let awayName = ev.teams.away.team.name;
             let homeId = ev.teams.home.team.id;
             let awayId = ev.teams.away.team.id;
             let homeTeam = team_names[homeId - 1]
             let awayTeam = team_names[awayId - 1]
-            let hLogo;
-            let aLogo;
+            let hLogo,aLogo, homeName, awayName;
+            
             if(homeTeam != null){
                 hLogo = homeTeam.logo
+                homeName = homeTeam.abbreviation;
             }
             if(awayTeam != null){
                 aLogo = awayTeam.logo
+                awayName = awayTeam.abbreviation
             }
             let game = {
                 gameId: counter,
@@ -75,7 +75,8 @@ const list = [
                 awayName: awayName,
                 awayId: awayId,
                 homeLogo: hLogo,
-                awayLogo: aLogo
+                awayLogo: aLogo,
+                
                 // awayLogo: awayLogo        
             }
             games.push(game);
@@ -90,12 +91,14 @@ const list = [
     keyExtractor = (item) => item.gameId
   
     renderItem = ({ item }) => (
-    <ListItem bottomDivider>
-        <Avatar rounded source={{uri: item.homeLogo}} />
-        <ListItem.Title>{item.homeName}</ListItem.Title>
-        <ListItem.Subtitle>{'vs.'}</ListItem.Subtitle>
-        <ListItem.Title>{item.awayName}</ListItem.Title>
+    <ListItem  style={styles.item} bottomDivider>
         <Avatar rounded source={{uri: item.awayLogo}} />
+        <ListItem.Title style={styles.title}>{item.awayName}</ListItem.Title>
+        <ListItem.Subtitle>{'at'}</ListItem.Subtitle>
+        <ListItem.Title style={styles.title}>{item.homeName}</ListItem.Title>
+        <Avatar rounded source={{uri: item.homeLogo}} />
+        <ListItem.Subtitle>{{}}</ListItem.Subtitle>
+        <ListItem.Chevron></ListItem.Chevron>
 
         
     </ListItem>
@@ -103,7 +106,7 @@ const list = [
   
     render () {
     return (
-      <FlatList
+      <FlatList style={styles.container}
         keyExtractor={this.keyExtractor}
         data={this.state.games}
         renderItem={this.renderItem}
