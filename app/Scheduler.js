@@ -1,10 +1,22 @@
 import React, {useState} from 'react'
 import { render } from 'react-dom';
-import { View, StyleSheet, Image, FlatList, ListItem } from 'react-native';
+import { View, StyleSheet, Image, FlatList } from 'react-native';
+import { ListItem } from 'react-native-elements';
 
 
 
 const url = 'https://statsapi.web.nhl.com/api/v1/schedule'
+
+const items = [
+    {
+        name: 'bryson',
+        test: 'contact'
+    },
+    {
+        name: 'james',
+        test: 'contacts'
+    }
+]
 export default class Scheduler extends React.Component{
     constructor(props){
         super(props)
@@ -30,24 +42,27 @@ async getNHLSchedule(url){
 
 keyExtractor = (item, index) => index.toString()
 
-renderItem(item){
+renderItem = ({item}) => {
     <ListItem
     title={item.name}
-    subtitle={item.subtitle}
-    leftAvatar={{ source: { uri: item.avatar_url } }}
-    bottomDivider
-    chevron
+    subtitle={item.test}
+    //leftAvatar={{ source: { uri: item.avatar_url } }}
+    bottomDivider={true}
   />
 }
 
 
 render(){
-    this.getNHLSchedule(url);
+    console.log("test")
     return(
-        <div>
+       <View>
+        <FlatList
+            keyExtractor={this.keyExtractor}
+            data={items}
+            renderItem={this.renderItem} />
+        </View>
             
-      
-      </div>
+  
     )
 }
 
