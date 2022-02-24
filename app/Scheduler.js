@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
 })
 
   const NHL_SCHEDULE = 'https://statsapi.web.nhl.com/api/v1/schedule'
+  
   export default class Scheduler extends React.Component {
     constructor(props){
         super(props);
@@ -50,6 +51,7 @@ const styles = StyleSheet.create({
     createGamesObject = () =>{
         //from state schedule object, create Game
         let games = []
+        console.log(this.state.schedule)
         let counter = 0;
         const team_names = teams;
         this.state.schedule.dates[0].games.forEach(ev => {
@@ -89,16 +91,22 @@ const styles = StyleSheet.create({
 
 
     keyExtractor = (item) => item.gameId
+    
   
+    navToChild(item){
+        console.log(item)
+    }
+    //figure out start time later
     renderItem = ({ item }) => (
-    <ListItem  style={styles.item} bottomDivider>
+    <ListItem button onPress={() => this.navToChild(item)} style={styles.item} bottomDivider >
         <Avatar rounded source={{uri: item.awayLogo}} />
         <ListItem.Title style={styles.title}>{item.awayName}</ListItem.Title>
         <ListItem.Subtitle>{'at'}</ListItem.Subtitle>
         <ListItem.Title style={styles.title}>{item.homeName}</ListItem.Title>
         <Avatar rounded source={{uri: item.homeLogo}} />
-        <ListItem.Subtitle>{{}}</ListItem.Subtitle>
+        <ListItem.Subtitle>{'7:00PM'}</ListItem.Subtitle>
         <ListItem.Chevron></ListItem.Chevron>
+        
 
         
     </ListItem>
